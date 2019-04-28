@@ -11,27 +11,12 @@ class TimeElapsedTape(QGraphicsItem):
         super(TimeElapsedTape, self).__init__(parent)
         # time in seconds
         self.currTime = 0
-        self.width = 400
+        self.width = 800
         self.height = 50
-        self.lineSpacing = 5
-        self.direction = 1 # Horizontal
-        
-        self.backColor = Qt.black        
-        self.linePen = QPen(Qt.white, 1)
-        self.textPen = QPen(Qt.white, 1)
-
-        self.backColor = Qt.lightGray        
-        self.linePen = QPen(Qt.black, 1)
-        self.textPen = QPen(Qt.black, 1)
-
-        self.backColor = Qt.blue        
-        self.linePen = QPen(Qt.white, 1)
-        self.textPen = QPen(Qt.white, 1)
-
-        self.width, self.height = self.height, self.width
+        self.lineDistance = 10
 
     def boundingRect(self):           
-        return QRectF(0, 0, self.width+20, self.height)
+        return QRectF(0, 0, self.width, self.height+20)
 
     def setCurTime(self, sec):
         self.currTime = sec
@@ -41,14 +26,12 @@ class TimeElapsedTape(QGraphicsItem):
         rect = self.boundingRect()
         brush = QBrush()
         brush.setStyle(Qt.SolidPattern)
-        brush.setColor(self.backColor)
+        brush.setColor(Qt.lightGray)
         painter.setBrush(brush)
         painter.drawRect(QRectF(0, 0, self.width, self.height))
 
         painter.setPen(QPen(Qt.red, 2))
-        # painter.drawLine(QPointF(self.width/2, 0), QPointF(self.width/2, self.height))
-
-        painter.drawLine(QPointF(0, self.height/2), QPointF(self.width, self.height/2))
+        painter.drawLine(QPointF(self.width/2, 0), QPointF(self.width/2, self.height))
         
         font = painter.font()
         font.setPixelSize(12)
@@ -56,40 +39,32 @@ class TimeElapsedTape(QGraphicsItem):
         fontMetrics = QFontMetrics(font)
         painter.setFont(font)
         textRect = fontMetrics.boundingRect(str(self.currTime))
-        painter.drawText(QPointF(50+5, self.height/2), str(self.currTime))       
-        painter.setPen(self.linePen)
+        painter.drawText(self.width/2 - (textRect.width()/2), 65, str(self.currTime))        
+        painter.setPen(QPen(Qt.black, 1))
         
         # one line after 5 pixels
         startValue = self.currTime        
-        # origin = (self.width / 2) - (startValue * self.lineSpacing)
-        # min = int(startValue - (self.width * .5) / self.lineSpacing)
-        # max = int(startValue + (self.width * .5) / self.lineSpacing)
-
-        origin = (self.height / 2) - (startValue * self.lineSpacing)
-        min = int(startValue - (self.height * .5) / self.lineSpacing)
-        max = int(startValue + (self.height * .5) / self.lineSpacing)
+        origin = (self.width / 2) - (startValue * self.lineDistance)
+        min = int(startValue - (self.width * .5) / self.lineDistance)
+        max = int(startValue + (self.width * .5) / self.lineDistance)
         
         for i in range(min, max):
-            # x1 = x2 = origin + (i * self.lineSpacing)
-            # y1 = self.height
-
-            x1 = self.width
-            y1 = y2 = origin + (i * self.lineSpacing)
+            x1 = x2 = origin + (i * self.lineDistance)
+            y1 = self.height
              
             if i % 10 == 0:
-                x2 = 10
+                y2 = 10
                 if i >= 0:                 
                     font.setWeight(QFont.Bold)
                     font.setPixelSize(10)
                     painter.setFont(font)
-                    painter.drawText(0, y1, f'{i}')
+                    painter.drawText(x1, 10, f'{i}')
             elif i % 5 == 0:
-                x2 = 25
+                y2 = 25
             else:
-                x2 = 37
+                y2 = 37
             if i >= 0:                 
-                painter.drawLine(x1, y1, x2, y2)
-                print(x2, y2)            
+                painter.drawLine(x1, y1, x2, y2)            
 
 def timerHandler(): 
     tape.setCurTime(tape.currTime+1)
@@ -97,18 +72,18 @@ def timerHandler():
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    scene = QGraphicsScene(QRectF(-10, -100, 200, 850))
+    scene = QGraphicsScene(QRectF(-10, -100, 850, 250))
     # scene.addItem(QGraphicsRectItem(scene.sceneRect()))
     
     tape = TimeElapsedTape()
     scene.addItem(tape)
 
     timer = QTimer()
-    timer.setInterval(100)
+    timer.setInterval(1000)
     timer.timeout.connect(timerHandler)
 
     view = QGraphicsView()
     view.setScene(scene)
     view.show()
     timer.start()   
-    sys.exit(app.exec_())           
+    sys.exit(app.exec_())
