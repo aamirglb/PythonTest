@@ -76,8 +76,8 @@ class IconEditor(QWidget):
 		if self.image.rect().contains(i, j):			
 			if opaque:
 				penC = QColor('black')
-				# self.image.setPixel(QPoint(i, j), penC.rgba())				
-				self.image.setPixel(i, j, QColor(255, i*2.56, j*2.56, 255).rgb())
+				self.image.setPixel(i, j, penC.rgba())				
+				# self.image.setPixel(i, j, QColor(255, i*2.56, j*2.56, 255).rgb())
 			else:
 				print('#' * 10)
 				self.image.setPixel(QPoint(i, j), qRgba(0, 0, 0, 0))
@@ -118,7 +118,11 @@ def testImage():
 
 	for x in range(im.width()):
 		for y in range(im.height()):
-			im.setPixel(x, y, QColor(255, x*2.56, y*2.56, 255).rgb())
+			if x % 2 == 0:
+				im.setPixel(x, y, QColor('white').rgb())
+			else:
+				im.setPixel(x, y, QColor('black').rgb())	
+			# im.setPixel(x, y, QColor(255, x*2.56, y*2.56, 255).rgb())
 	im.save('test.png')
 			
 if __name__ == "__main__":
@@ -127,9 +131,9 @@ if __name__ == "__main__":
 	img = QImage()
 	if img.load("./mouse.png"):
 		print('Image loaded successfully')
-		# window.setIconImage(img)
+		window.setIconImage(img)
 	else:
 		print('Failed to load mouse.png image')	
 	window.show()
-	# testImage()
+	testImage()
 	sys.exit(app.exec_())
