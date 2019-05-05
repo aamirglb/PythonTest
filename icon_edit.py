@@ -1,7 +1,7 @@
 import sys
-from PySide2.QtWidgets import (QApplication, QWidget, QSizePolicy,  )
+from PySide2.QtWidgets import (QApplication, QWidget, QSizePolicy,  QScrollArea, )
 from PySide2.QtCore import (Qt, QRect, QSize, )
-from PySide2.QtGui import (QColor, QImage, qRgba, QPainter, QPen)
+from PySide2.QtGui import (QColor, QImage, qRgba, QPainter, QPen, QPalette)
 
 class IconEditor(QWidget):
 	def __init__(self):
@@ -134,6 +134,13 @@ if __name__ == "__main__":
 		window.setIconImage(img)
 	else:
 		print('Failed to load mouse.png image')	
-	window.show()
-	testImage()
+	# window.show()
+
+	scrollArea = QScrollArea()
+	scrollArea.setWidget(window)
+	scrollArea.viewport().setBackgroundRole(QPalette.Dark)
+	scrollArea.viewport().setAutoFillBackground(True)
+	scrollArea.setWindowTitle("Icon Editor")
+	scrollArea.show()	
+	# testImage()
 	sys.exit(app.exec_())
