@@ -19,7 +19,7 @@ class DaysToGo(QtWidgets.QWidget):
 		painter = QtGui.QPainter(self)
 
 		font = painter.font()
-		font.setPointSize(50)
+		font.setPointSize(75)
 		font.setWeight(QtGui.QFont.Bold)
 		painter.setFont(font)
 
