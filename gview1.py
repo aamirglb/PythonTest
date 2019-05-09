@@ -9,16 +9,22 @@ import sys
 if __name__ == '__main__':
 	app = QApplication(sys.argv)
 	scene = QGraphicsScene(QRectF(-50, -50, 400, 200))
-	scene.addItem(QGraphicsRectItem(scene.sceneRect()))
+	
+	rect = QGraphicsRectItem(scene.sceneRect().adjusted(1, 1, -1, -1))
+	rect.setPen(QPen(Qt.red, 1))
+	scene.addItem(rect)
 	
 	rectItem = QGraphicsRectItem(QRectF(-25, 25, 200, 40))
 	rectItem.setPen(QPen(Qt.red, 3, Qt.DashDotLine))
 	rectItem.setBrush(Qt.gray)
 	scene.addItem(rectItem)
+	print(f'Rect Pos: {rectItem.pos()}')
 
 	textItem = QGraphicsSimpleTextItem("Foundation of Qt")
 	scene.addItem(textItem)
+	print(f'Text Pos: {textItem.pos()}')
 	textItem.setPos(50, 0)
+	print(f'Text Pos: {textItem.pos()}')
 
 	ellipseItem = QGraphicsEllipseItem(QRectF(170, 20, 100, 75))
 	ellipseItem.setPen(QPen(Qt.darkBlue))
