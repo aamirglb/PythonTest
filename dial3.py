@@ -17,7 +17,7 @@ class Test(QtWidgets.QWidget):
 	def setDialValue(self, _val):
 		self.value = _val
 
-		self.angle = (210 * self.value)
+		self.angle = (210 * self.value)//100
 
 		self.update()
 
