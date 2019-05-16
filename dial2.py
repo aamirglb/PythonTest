@@ -38,7 +38,7 @@ class Dial(QtWidgets.QWidget):
 	def paintEvent(self, event):
 		painter = QtGui.QPainter(self)
 		painter.save()
-		painter.setRenderHint(QtGui.QPainter.Antialiasing, True);
+		painter.setRenderHint(QtGui.QPainter.Antialiasing, True)
 
 		painter.drawPoint(125, 105)
 		painter.setPen(QtGui.QPen(QtGui.QColor("lime"), 10))
