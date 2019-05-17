@@ -5,10 +5,11 @@ from PySide2 import QtWidgets, QtGui, QtCore
 class Test(QtWidgets.QWidget):
 	def __init__(self, parent=None):
 		super(Test, self).__init__(parent)
-		self.angle = 210
+		self.angle = 150
 		self.setBackgroundRole(QtGui.QPalette.Dark)
 		self.setAutoFillBackground(True)
 		self.value = 0
+		self.maxValue = 7000
 
 	def sizeHint(self):
 		return QtCore.QSize(400, 400)
@@ -17,7 +18,7 @@ class Test(QtWidgets.QWidget):
 	def setDialValue(self, _val):
 		self.value = _val
 
-		self.angle = (210 * self.value)//100
+		self.angle = 150 + (210 * self.value) // self.maxValue
 
 		self.update()
 
@@ -38,15 +39,17 @@ class Test(QtWidgets.QWidget):
 		radius = 90
 
 		painter.save()
-		painter.rotate(360 - self.angle)
+		# painter.rotate(360 - self.angle)
+		painter.rotate(self.angle)
 
 		palette = QtGui.QPalette()
 
+		needleBaseWidth = 5
 		needlePath = QtGui.QPainterPath()
-		needlePath.moveTo(0, 3)
+		needlePath.moveTo(0, needleBaseWidth)
 		needlePath.lineTo(radius, 0)
-		needlePath.lineTo(0, -3)
-		needlePath.lineTo(0, 3)
+		needlePath.lineTo(0, -needleBaseWidth)
+		needlePath.lineTo(0, needleBaseWidth)
 		# needlePath.closeSubpath()
 
 		painter.fillPath(needlePath, QtGui.QBrush(QtGui.QColor("lime")))
@@ -61,7 +64,7 @@ class Test(QtWidgets.QWidget):
 		width = 180
 		height = 180
 
-		penWidth = 15
+		penWidth = 20
 		painter.setPen(QtGui.QPen(QtGui.QColor("lime"), penWidth))
 		painter.drawArc(origin.x(), origin.y(), width, height, 16 * 210, -16 * (210 - 60))
 
@@ -91,12 +94,12 @@ class Test(QtWidgets.QWidget):
 	rotationAngle = QtCore.Property(int, fset=setRotationAngle)
 
 def animationFinished():
-	if animation.currentValue() == 210:
-		animation.setStartValue(210)
+	if animation.currentValue() == 7000:
+		animation.setStartValue(7000)
 		animation.setEndValue(0)
 	else:
 		animation.setStartValue(0)
-		animation.setEndValue(210)		
+		animation.setEndValue(7000)		
 	animation.start()
 
 if __name__ == "__main__":
@@ -105,14 +108,14 @@ if __name__ == "__main__":
 	dial = Test()
 	
 	slider = QtWidgets.QSlider(QtCore.Qt.Horizontal)
-	slider.setRange(1, 100)
+	slider.setRange(0, 7000)
 	slider.setValue(0)
 	slider.valueChanged.connect(dial.setDialValue)
 
-	animation = QtCore.QPropertyAnimation(dial, b"rotationAngle")
-	animation.setDuration(5000)
-	animation.setStartValue(210)
-	animation.setEndValue(0)
+	animation = QtCore.QPropertyAnimation(slider, b"value")
+	animation.setDuration(6000)
+	animation.setStartValue(0)
+	animation.setEndValue(7000)
 	animation.finished.connect(animationFinished)
 	# animation.start()
 
