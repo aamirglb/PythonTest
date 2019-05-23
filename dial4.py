@@ -14,7 +14,7 @@ class Test(QtWidgets.QWidget):
 		self.counter = -1
 
 	def sizeHint(self):
-		return QtCore.QSize(400, 400)
+		return QtCore.QSize(120*2, 120*2)
 
 	def setCautionRange(self, min, max):
 		self.cautionMin = min
@@ -59,8 +59,10 @@ class Test(QtWidgets.QWidget):
 
 		arcPath = QtGui.QPainterPath()
 		# draw first line		
-		arcPath.moveTo(minRadius * math.cos(-startAngle * math.pi / 180.0), minRadius * math.sin(-startAngle * math.pi / 180))
-		arcPath.lineTo(majRadius * math.cos(-startAngle * math.pi / 180.0), majRadius * math.sin(-startAngle * math.pi / 180))
+		arcPath.moveTo(minRadius * math.cos(-startAngle * math.pi / 180.0), 
+			minRadius * math.sin(-startAngle * math.pi / 180))
+		arcPath.lineTo(majRadius * math.cos(-startAngle * math.pi / 180.0), 
+			majRadius * math.sin(-startAngle * math.pi / 180))
 
 		arcLength = endAngle - startAngle
 		arcPath.arcTo(majBoundingRect, startAngle, arcLength)
@@ -78,18 +80,18 @@ class Test(QtWidgets.QWidget):
 
 	def paintEvent(self, event):
 		painter = QtGui.QPainter(self)
-		painter.setWindow(-200, -200, 400, 400)
-		painter.setRenderHint(QtGui.QPainter.Antialiasing, True)
-		painter.drawRect(-195, -195, 390, 390)
+		side = min(self.width(), self.height())
+		painter.setViewport((self.width() - side) / 2, (self.height() - side) / 2,
+			side, side)
 
-		# Test
-		painter.drawLine(-200, 0, 200, 0)
-		painter.drawLine(0, -200, 0, 200)
+		painter.setWindow(-self.width()/2, -self.height()/2, self.width(), self.height())
+		painter.setRenderHint(QtGui.QPainter.Antialiasing, True)
+
+		# Radius of the needle drawn from (0, 0)
 		radius = 90 + 5
 
 		painter.save()		
 		painter.rotate(self.angle)
-
 		palette = QtGui.QPalette()
 
 		needleBaseWidth = 5
@@ -98,8 +100,7 @@ class Test(QtWidgets.QWidget):
 		needlePath.lineTo(radius, 0)
 		needlePath.lineTo(0, -needleBaseWidth)
 		needlePath.lineTo(0, needleBaseWidth)
-	
-		painter.fillPath(needlePath, QtGui.QBrush(QtGui.QColor("lime")))
+			
 		painter.setPen(QtGui.QPen(QtCore.Qt.NoPen))
 		painter.setBrush(palette.brush(QtGui.QPalette.Active, QtGui.QPalette.Light))
 		painter.drawPath(needlePath)
@@ -107,14 +108,6 @@ class Test(QtWidgets.QWidget):
 		painter.setBrush(QtCore.Qt.black)
 		painter.drawEllipse(-10, -10, 20, 20)
 		painter.restore()
-
-		painter.save()
-		
-		width = 180
-		height = 180
-		origin = QtCore.QPoint(-width/2, -height/2)
-		
-		painter.restore()		
 
 		# Compute percentage of different arc
 		warningValue =  (self.warningMax - self.warningMin)
@@ -133,7 +126,6 @@ class Test(QtWidgets.QWidget):
 		font = painter.font()
 		font.setPixelSize(24)
 		painter.setFont(font)
-
 		
 		rect = QtCore.QRect(5, 15, 95, 25)
 		painter.setBrush(QtCore.Qt.black)
@@ -143,7 +135,7 @@ class Test(QtWidgets.QWidget):
 		painter.setPen(QtGui.QPen(QtGui.QColor("lime"), 2))
 		painter.drawText(rect, QtCore.Qt.AlignRight, f"{self.value}")		
 
-
+	# Property for needle angle
 	rotationAngle = QtCore.Property(int, fset=setRotationAngle)
 
 def animationFinished():
